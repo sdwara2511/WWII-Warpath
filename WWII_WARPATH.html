@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>World War II Warpath</title>
+	<style>
+.hidden
+{
+display: none;
+}
+	</style>
+  </head>
+  <body>
+    <div id="homenations-div">
+        <h2>
+            Choose your Nation!
+        </h2>
+        <form id="homenations">
+            <button type="button">
+                spain
+            </button>
+            <button type="button">
+                usa
+            </button>
+            <button type="button">
+                uk
+            </button>
+            <button type="button">
+                france
+            </button>
+        </form>
+    </div> 
+	<div id="enemynations-div" class="hidden">
+        <h2>
+            Choose your Enemy!
+        </h2>
+        <form id="enemynations">
+            <button type="button">
+                nazi-germany
+            </button>
+            <button type="button">
+                italy
+            </button>
+            <button type="button">
+                japan
+            </button>
+            <button type="button">
+                vichy-france
+            </button>
+        </form>
+    </div>
+	<div id="times-div" class="hidden">
+        <h2>
+            Choose your Time!
+        </h2>
+        <form id="times">
+            <button type="button">
+                21st Century
+            </button>
+            <button type="button">
+                20th Century
+            </button>
+            <button type="button">
+                1800s
+            </button>
+        </form>
+    </div>
+	<div id="directions-div" class="hidden">
+	This is a World war simulator. To play, you will be given a set of attacks. When you use, an offensive attack, it will reduce from you energy and from your enemy's health. The goal is to reduce the enemy's health to zero. You cant run out of energy though. Good Luck, and let the battle begin.
+	<form id="directions">
+            <button type="button">
+                Continue
+            </button>
+        </form>
+	</div>
+    <div id="actions-div" class="hidden">
+        <h2>
+            Choose a move below!
+        </h2>
+        <form id="actions">
+            <button type="button">
+                spain
+            </button>
+            <button type="button">
+                usa
+            </button>
+            <button type="button">
+                uk
+            </button>
+            <button type="button">
+                france
+            </button>
+			<button type="button">
+                france
+            </button>
+        </form>
+		<label for="playerhealthbar">Your Health:</label>
+
+<progress id="playerhealthbar" max="100" value="100"></progress>
+
+<label for="playerenergybar">Your Energy:</label>
+
+<progress id="playerenergybar" max="150" value="150"></progress>
+
+<label for="enemyhealthbar">Enemy's Health:</label>
+
+<progress id="enemyhealthbar" max="150" value="150"></progress>
+
+<label for="enemyenergybar">Enemy's Energy:</label>
+
+<progress id="enemyenergybar" max="200" value="200"></progress>
+    </div> 
+	<script>
+var homenations = document.getElementById("homenations");
+var enemynations = document.getElementById("enemynations");
+var times = document.getElementById("times");
+var directions = document.getElementById("directions");
+var actions = document.getElementById("actions");
+
+var homenations_div = document.getElementById("homenations-div");
+var enemynations_div = document.getElementById("enemynations-div");
+var times_div = document.getElementById("times-div");
+var directions_div = document.getElementById("directions-div");
+var actions_div = document.getElementById("actions-div");
+
+var healthbar = document.getElementById("playerhealthbar");
+var enemhealthbar = document.getElementById("enemyhealthbar");
+var energybar = document.getElementById("playerenergybar");
+var enemenergybar = document.getElementById("enemyenergybar");
+
+var homenation;
+var enemynation;
+var time;
+var action;
+
+var EnemEner = 200;
+var EnemHeal = 150;
+var YourEner = 150;
+var YourHeal = 100;
+
+
+function homenation_click(event)
+{
+   // alert(event.target.innerHTML);
+   homenation=event.target.innerHTML.trim();
+   homenations_div.classList.add("hidden");
+   enemynations_div.classList.remove("hidden");
+}
+homenations.addEventListener("click", homenation_click);
+
+function enemynation_click(event)
+{
+   // alert(event.target.innerHTML);
+   enemynation=event.target.innerHTML.trim();
+   enemynations_div.classList.add("hidden");
+   times_div.classList.remove("hidden");
+}
+enemynations.addEventListener("click", enemynation_click);
+  
+   var Ability21 = ["nuke", "missile", "shotgun battalion", "hospitalize", "barricade"];
+ var Ability20 = ["nuke", "aircrafts", "shotgun battalion", "hospitalize", "barricade"];
+ var Ability18 = ["cannons", "naval fleet", "shotgun battalion", "hospitalize", "barricade"];
+ var Ab21Ener = {"nuke" : 100, "missile" : 15, "shotgun battalion" : 7,
+             "hospitalize" : 7, "barricade" : 6}
+ var Ab21Dam = {"nuke" : 40, "missile" : 10, "shotgun battalion" : 15,
+           "hospitalize":0, "barricade":0}
+ var Ab21Heal = {"nuke" : 0, "missile" : 0, "shotgun battalion" : 0,
+             "hospitalize" : 15, "barricade" : 0}
+ var Ab20Ener = {"nuke" : 100, "aircrafts" : 15, "shotgun battalion" : 7,
+            "hospitalize" : 7, "barricade" : 6}
+ var Ab20Dam = {"nuke" : 40, "aircrafts" : 10, "shotgun battalion" : 15,
+           "hospitalize" : 0, "barricade" : 0}
+ var Ab20Heal = {"nuke" : 0, "aircrafts" : 0, "shotgun battalion" : 0,
+             "hospitalize" : 15, "barricade" : 0}
+
+ var Ab18Ener = {"cannons" : 100, "naval fleet" : 15, "shotgun battalion" : 7,
+             "hospitalize" : 7, "barricade" : 6}
+ var Ab18Dam = {"cannons" : 40, "naval fleet" : 10, "shotgun battalion" : 15,
+           "hospitalize" : 0, "barricade" : 0}
+ var Ab18Heal = {"cannons" : 0, "naval fleet" : 0, "shotgun battalion" : 0,
+             "hospitalize" : 15, "barricade" : 0}
+var Win = false;
+var Lose = false;
+var YourBarri = true;
+var Ablist;
+var Damlist;
+var Heallist;
+var Enerlist;
+var Turndone = false; 
+
+
+
+	function times_click(event)
+{
+   // alert(event.target.innerHTML);
+   time=event.target.innerHTML.trim();
+   times_div.classList.add("hidden");
+   directions_div.classList.remove("hidden");
+   if (time == "21st Century")
+   {
+    Ablist = Ability21;
+    Enerlist = Ab21Ener;
+    Damlist = Ab21Dam;
+    Heallist = Ab21Heal;
+	}
+else if (time == "20th Century")
+{
+    Ablist = Ability20;
+    Enerlist = Ab20Ener;
+    Damlist = Ab20Dam;
+    Heallist = Ab20Heal;
+	}
+else if (time == "1800s")
+    {
+	Ablist = Ability18;
+    Enerlist = Ab18Ener;
+    Damlist = Ab18Dam;
+    Heallist = Ab18Heal;
+	}
+}
+times.addEventListener("click", times_click);
+
+function direction_click(event)
+{
+   // alert(event.target.innerHTML);
+   directions_div.classList.add("hidden");
+   actions_div.classList.remove("hidden");
+   for (var i = 0; i < 5; i++){
+		actions.children[i].innerHTML = Ablist[i]
+
+	}
+}
+directions.addEventListener("click", direction_click);
+	
+function action_click(event)
+{
+	if(Win || Lose) return;
+
+    if(!Turndone)
+    {
+        if(event.target.nodeName!="BUTTON") return;
+        action = event.target.innerHTML.trim();
+        //console.log(action, Enerlist[action]);
+        //EnemHeal -= Damlist[yourturn.lower()];
+        //console.log(EnemHeal, action, Damlist)
+        EnemHeal -= Damlist[action];
+        enemhealthbar.value = EnemHeal;
+
+        //YourEner -= Enerlist[yourturn.lower()];
+        YourEner -= Enerlist[action];
+        energybar.value = YourEner;
+        //YourHeal += Heallist[yourturn.lower()];
+        YourHeal += Heallist[action];
+        healthbar.value = YourHeal;
+
+        if(action == "barricade")
+        {
+            YourBarri = true;
+        }
+
+        if(YourHeal <= 0)
+        {
+            Lose = true;
+            return;
+        }
+
+        if(YourEner <= 0)
+        {
+            Lose = true;
+            return;
+        }
+
+        if(EnemEner <= 0)
+        {
+            Win = true;
+            return;
+        }
+
+        if(EnemHeal <= 0)
+        {
+            Win = true;
+            return;
+        }
+
+        if(YourHeal > 100)
+        {
+            YourHeal = 100;
+        }
+
+        if(EnemHeal > 150)
+        {
+            EnemHeal = 150;
+        }
+
+
+        /*   if YourHeal <= 0:
+            lose = True
+            break
+        if EnemHeal <= 0:
+            win = True
+            break
+        if YourEner <= 0:
+            lose = True
+            break
+        if EnemEner <= 0:
+            win = True
+            break
+        */
+        setTimeout(enemTurn, 1000);
+        Turndone = true;
+    }
+}
+actions.addEventListener("click", action_click);
+//EnemEner -= Enerlist[Move.lower()]
+//YourHeal -= Damlist[Move.lower()]
+
+function enemTurn()
+{
+    var enemAction = Ablist[Math.floor(Math.random()*Ablist.length)];
+    alert(`The enemy took the action ${enemAction}`)
+    if(YourBarri)
+    {
+        YourHeal -= Damlist[enemAction] - 15;
+    }
+    else
+    {
+        YourHeal -= Damlist[enemAction];
+    }
+    EnemEner -= Enerlist[enemAction];
+    healthbar.value = YourHeal;
+    enemenergybar.value = EnemEner
+    console.log(enemAction, Damlist, YourHeal)
+    if(YourHeal <= 0)
+    {
+        Lose = true;
+        return;
+    }
+
+    if(YourEner <= 0)
+    {
+        Lose = true;
+        return;
+    }
+
+    if(EnemEner <= 0)
+    {
+        Win = true;
+        return;
+    }
+
+    if(EnemHeal <= 0)
+    {
+        Win = true;
+        return;
+    }
+
+    Turndone = false;
+}
+	
+	
+	</script>
+  </body>
+</html>
+Get the time to match up with the moves
